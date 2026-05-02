@@ -27,7 +27,7 @@ const PORT = process.env.PORT || 3001;
 
 app.use(cors());
 app.use(express.json());
-app.use(express.static(path.join(__dirname, '..', 'frontend')));
+app.use(express.static(path.join(__dirname, 'frontend')));
 
 /* ────────────────────────────────────────────────────────────────────────────
    UTILITY: get / refresh a Gofile guest token
@@ -263,7 +263,7 @@ app.get('/api/proxy', async (req, res) => {
    Fallback → serve the frontend SPA
 ──────────────────────────────────────────────────────────────────────────── */
 app.get('*', (_req, res) => {
-  res.sendFile(path.join(__dirname, '..', 'frontend', 'index.html'));
+  res.sendFile(path.join(__dirname, 'frontend', 'index.html'));
 });
 
 app.listen(PORT, () => {
