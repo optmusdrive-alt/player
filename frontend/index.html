@@ -1,0 +1,890 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover,user-scalable=no">
+<title>KEX PLAYER</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+
+:root{
+  --ink:#07080b;
+  --surface:#0d0f14;
+  --card:#141720;
+  --card2:#1c2030;
+  --border:rgba(255,255,255,.06);
+  --border2:rgba(255,255,255,.1);
+  --text:#e8eaf2;
+  --muted:#4a5168;
+  --muted2:#6b7490;
+  --red:#ff2d55;
+  --orange:#ff6b35;
+  --cyan:#00d4ff;
+  --glow:rgba(255,45,85,.3);
+  --glow2:rgba(255,45,85,.15);
+  --radius:16px;
+  --ff:'Syne',system-ui,sans-serif;
+  --mono:'DM Mono',monospace;
+}
+
+html{color-scheme:dark}
+body{background:var(--ink);color:var(--text);font-family:var(--ff);min-height:100vh;display:flex;flex-direction:column;overflow-x:hidden}
+
+/* Subtle mesh background */
+body::after{
+  content:'';position:fixed;inset:0;z-index:0;pointer-events:none;
+  background:
+    radial-gradient(ellipse 60% 40% at 80% 10%,rgba(255,45,85,.04) 0%,transparent 60%),
+    radial-gradient(ellipse 50% 30% at 10% 80%,rgba(0,212,255,.03) 0%,transparent 60%);
+}
+
+/* ── HEADER ── */
+header{
+  position:sticky;top:0;z-index:400;
+  background:rgba(7,8,11,.9);
+  backdrop-filter:blur(24px) saturate(1.6);
+  border-bottom:1px solid var(--border);
+  height:60px;padding:0 28px;
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+}
+.logo{display:flex;align-items:center;gap:12px;text-decoration:none;cursor:default}
+.logo-mark{
+  width:34px;height:34px;border-radius:10px;
+  background:linear-gradient(140deg,var(--red),var(--orange));
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 0 18px var(--glow);
+  font-size:15px;color:#fff;
+}
+.logo-wordmark{font-size:19px;font-weight:800;letter-spacing:-0.5px;color:#fff}
+.logo-wordmark em{color:var(--red);font-style:normal}
+.logo-tag{font-size:9px;font-weight:600;letter-spacing:2.5px;color:var(--muted2);text-transform:uppercase;margin-top:1px}
+
+.hdr-nav{display:flex;gap:2px}
+.hdr-nav a{
+  color:var(--muted2);text-decoration:none;font-size:.82rem;font-weight:600;
+  padding:6px 13px;border-radius:8px;transition:.15s;letter-spacing:.3px;
+}
+.hdr-nav a:hover{color:var(--text);background:rgba(255,255,255,.05)}
+
+.hdr-end{display:flex;align-items:center;gap:8px}
+.h-btn{
+  border:1px solid var(--border2);background:transparent;color:var(--muted2);
+  padding:6px 16px;border-radius:8px;cursor:pointer;font:600 .8rem var(--ff);
+  transition:.15s;letter-spacing:.3px;
+}
+.h-btn:hover{border-color:rgba(255,45,85,.5);color:var(--text)}
+.h-btn.filled{background:var(--red);border-color:var(--red);color:#fff;box-shadow:0 2px 14px var(--glow)}
+.h-btn.filled:hover{background:#e0002f;box-shadow:0 4px 22px var(--glow)}
+
+/* ── MAIN ── */
+main{
+  flex:1;position:relative;z-index:1;
+  display:flex;flex-direction:column;align-items:center;
+  padding:28px 20px 64px;gap:16px;
+}
+
+/* ── INPUT CARD ── */
+.input-card{
+  width:100%;max-width:1060px;
+  background:var(--card);
+  border:1px solid var(--border);
+  border-radius:20px;padding:22px 24px;
+  display:flex;flex-direction:column;gap:14px;
+  position:relative;overflow:hidden;
+}
+.input-card::before{
+  content:'';position:absolute;top:0;left:0;right:0;height:1px;
+  background:linear-gradient(90deg,transparent,rgba(255,45,85,.4),transparent);
+}
+.card-eyebrow{
+  font-size:10px;font-weight:700;letter-spacing:2.5px;
+  text-transform:uppercase;color:var(--muted2);
+  display:flex;align-items:center;gap:8px;
+}
+.card-eyebrow::before{
+  content:'';width:18px;height:2px;
+  background:linear-gradient(90deg,var(--red),var(--orange));border-radius:2px;
+}
+
+.url-row{display:flex;gap:10px;flex-wrap:wrap}
+.url-field{
+  flex:1;min-width:200px;
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--border2);
+  border-radius:12px;color:var(--text);
+  padding:13px 18px;font:500 .93rem var(--ff);outline:none;
+  transition:border-color .2s,box-shadow .2s;
+}
+.url-field:focus{border-color:var(--red);box-shadow:0 0 0 3px rgba(255,45,85,.1)}
+.url-field::placeholder{color:var(--muted)}
+
+.load-btn{
+  background:linear-gradient(130deg,var(--red),var(--orange));
+  border:none;color:#fff;padding:13px 24px;border-radius:12px;
+  cursor:pointer;font:700 .9rem var(--ff);letter-spacing:.3px;
+  display:flex;align-items:center;gap:8px;white-space:nowrap;
+  box-shadow:0 4px 18px var(--glow);transition:.18s;
+}
+.load-btn:hover:not(:disabled){transform:translateY(-2px);box-shadow:0 6px 28px var(--glow)}
+.load-btn:disabled{opacity:.45;cursor:not-allowed;transform:none}
+.load-btn .s-ico{animation:spin .75s linear infinite;display:none}
+.load-btn .p-ico{display:inline-block}
+.load-btn.loading .s-ico{display:inline-block}
+.load-btn.loading .p-ico{display:none}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* Status */
+.status{
+  display:none;align-items:center;gap:10px;
+  padding:9px 14px;border-radius:10px;font-size:.83rem;
+  border:1px solid transparent;background:rgba(0,0,0,.2);
+}
+.status.on{display:flex}
+.status.loading{color:var(--cyan);border-color:rgba(0,212,255,.15)}
+.status.error  {color:#ff5252;border-color:rgba(255,82,82,.2);background:rgba(255,82,82,.05)}
+.status.ok     {color:#69f0ae;border-color:rgba(105,240,174,.2);background:rgba(105,240,174,.05)}
+
+/* Track panel */
+.track-panel{display:none;flex-direction:column;gap:10px}
+.track-panel.on{display:flex}
+.track-heading{
+  font-size:10px;font-weight:700;letter-spacing:2px;
+  text-transform:uppercase;color:var(--muted2);
+  display:flex;align-items:center;gap:8px;
+}
+.track-heading i{color:var(--red);font-size:11px}
+
+.chips{display:flex;flex-wrap:wrap;gap:7px}
+.chip{
+  display:flex;align-items:center;gap:7px;
+  background:rgba(255,255,255,.03);border:1.5px solid var(--border2);
+  border-radius:10px;padding:8px 13px;
+  font:500 .8rem var(--ff);cursor:pointer;color:var(--muted2);
+  transition:.17s;user-select:none;
+}
+.chip:hover{border-color:rgba(255,45,85,.4);color:var(--text)}
+.chip.active{
+  border-color:var(--red);color:var(--text);
+  background:rgba(255,45,85,.1);
+  box-shadow:0 0 14px rgba(255,45,85,.2);
+}
+.chip .cbadge{
+  font:500 .68rem var(--mono);
+  background:rgba(255,255,255,.07);
+  padding:2px 7px;border-radius:5px;color:var(--cyan);
+}
+.chip.active .cbadge{background:rgba(255,45,85,.2);color:#ff80ab}
+
+/* Info row */
+.info-row{display:none;flex-wrap:wrap;gap:7px}
+.info-row.on{display:flex}
+.ipill{
+  display:flex;align-items:center;gap:5px;
+  background:rgba(255,255,255,.03);border:1px solid var(--border);
+  border-radius:20px;padding:4px 12px;font-size:.76rem;color:var(--muted2);
+}
+.ipill i{color:var(--red);font-size:.68rem}
+.ipill b{color:var(--text);font-weight:600}
+
+/* ── PLAYER ── */
+.player-shell{
+  width:100%;max-width:1060px;
+  border-radius:22px;overflow:hidden;
+  box-shadow:0 40px 80px -20px rgba(0,0,0,.9),0 0 0 1px var(--border);
+}
+.player{position:relative;background:#000}
+.vbox{position:relative;padding-top:56.25%;background:#000}
+.vel{
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:contain;background:#000;
+}
+
+/* Buffer spinner */
+.vspinner{
+  position:absolute;top:50%;left:50%;
+  transform:translate(-50%,-50%);
+  width:48px;height:48px;
+  border:3px solid rgba(255,255,255,.08);
+  border-top:3px solid var(--red);
+  border-radius:50%;animation:spin .9s linear infinite;
+  display:none;z-index:20;
+  box-shadow:0 0 24px var(--glow);
+}
+
+/* Empty overlay */
+.empty{
+  position:absolute;inset:0;z-index:10;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;gap:14px;
+  background:radial-gradient(ellipse at center,#14171f 0%,#000 100%);
+}
+.empty-icon{
+  width:76px;height:76px;border-radius:18px;
+  background:linear-gradient(135deg,rgba(255,45,85,.12),rgba(255,107,53,.06));
+  border:1px solid rgba(255,45,85,.18);
+  display:flex;align-items:center;justify-content:center;
+  font-size:30px;color:rgba(255,45,85,.45);
+}
+.empty-text{color:var(--muted);font-size:.88rem;font-weight:500}
+
+/* Title bar */
+.titlebar{
+  position:absolute;top:0;left:0;right:0;z-index:25;
+  padding:14px 18px;
+  background:linear-gradient(to bottom,rgba(0,0,0,.8),transparent);
+  display:flex;align-items:center;justify-content:space-between;
+  opacity:0;transition:opacity .25s;pointer-events:none;
+}
+.player.cv .titlebar{opacity:1;pointer-events:auto}
+.vid-title{
+  font-size:.84rem;font-weight:700;
+  background:rgba(0,0,0,.6);padding:4px 12px;border-radius:30px;
+  backdrop-filter:blur(8px);max-width:68%;overflow:hidden;
+  white-space:nowrap;text-overflow:ellipsis;
+}
+.x-btn{
+  background:rgba(0,0,0,.55);border:none;color:rgba(255,255,255,.7);
+  width:28px;height:28px;border-radius:50%;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:12px;
+  transition:.15s;
+}
+.x-btn:hover{color:#fff;background:rgba(255,45,85,.5)}
+
+/* ── CONTROLS ── */
+.controls{
+  position:absolute;bottom:0;left:0;right:0;z-index:30;
+  background:linear-gradient(0deg,rgba(0,0,0,.98),rgba(0,0,0,.3));
+  backdrop-filter:blur(8px);
+  padding:10px 16px 14px;
+  display:flex;flex-direction:column;gap:9px;
+  transform:translateY(100%);opacity:0;pointer-events:none;
+  transition:transform .28s ease,opacity .28s;
+}
+.player.cv .controls{transform:translateY(0);opacity:1;pointer-events:auto}
+
+/* Progress */
+.prog-wrap{width:100%}
+.prog-track{
+  width:100%;height:4px;border-radius:4px;
+  background:rgba(255,255,255,.12);cursor:pointer;position:relative;
+  transition:height .1s;
+}
+.prog-track:hover{height:6px}
+.prog-fill{
+  height:100%;width:0%;border-radius:4px;
+  background:linear-gradient(90deg,var(--red),var(--orange));
+  position:relative;transition:none;
+}
+.prog-fill::after{
+  content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);
+  width:10px;height:10px;border-radius:50%;
+  background:var(--red);box-shadow:0 0 10px var(--glow);
+  opacity:0;transition:opacity .15s;
+}
+.prog-track:hover .prog-fill::after{opacity:1}
+
+/* Button row */
+.ctrl-row{display:flex;align-items:center;justify-content:space-between;gap:6px;flex-wrap:wrap}
+.ctrl-l,.ctrl-r{display:flex;align-items:center;gap:4px}
+
+.cbtn{
+  background:transparent;border:none;color:rgba(255,255,255,.8);
+  width:36px;height:36px;border-radius:8px;cursor:pointer;
+  display:flex;align-items:center;justify-content:center;font-size:15px;
+  transition:.14s;
+}
+.cbtn:hover{background:rgba(255,255,255,.1);color:#fff;transform:scale(1.08)}
+
+.cbtn.play{
+  background:linear-gradient(135deg,var(--red),var(--orange));
+  width:40px;height:40px;border-radius:10px;font-size:14px;
+  box-shadow:0 2px 14px var(--glow);
+}
+.cbtn.play:hover{transform:scale(1.1);box-shadow:0 4px 22px var(--glow)}
+
+.time-tag{
+  font:500 11px var(--mono);
+  background:rgba(0,0,0,.55);padding:4px 10px;border-radius:6px;
+  color:rgba(255,255,255,.65);white-space:nowrap;
+}
+.time-tag b{color:#fff;font-weight:500}
+
+.vol-wrap{display:flex;align-items:center;gap:6px}
+.vol-sl{
+  width:68px;height:3px;-webkit-appearance:none;
+  background:rgba(255,255,255,.18);border-radius:3px;cursor:pointer;
+}
+.vol-sl::-webkit-slider-thumb{
+  -webkit-appearance:none;width:11px;height:11px;
+  background:var(--red);border-radius:50%;cursor:pointer;
+  box-shadow:0 0 8px var(--glow);
+}
+
+/* Popup menus */
+.menu-anchor{position:relative}
+.pmenu{
+  position:absolute;bottom:calc(100% + 10px);left:50%;transform:translateX(-50%);
+  background:rgba(12,14,20,.97);backdrop-filter:blur(20px);
+  border:1px solid var(--border2);border-radius:14px;padding:6px;
+  min-width:130px;display:none;z-index:60;
+  box-shadow:0 12px 40px rgba(0,0,0,.7);
+}
+.pmenu.right{left:auto;right:0;transform:none;min-width:210px}
+.pmenu.open{display:block}
+.pitem{
+  padding:7px 14px;border-radius:8px;font-size:.82rem;font-weight:500;
+  cursor:pointer;color:rgba(255,255,255,.65);
+  transition:.12s;display:flex;align-items:center;gap:9px;
+}
+.pitem:hover{background:rgba(255,255,255,.07);color:#fff}
+.pitem.active{color:var(--red);background:rgba(255,45,85,.1);font-weight:700}
+.pitem .chk{font-size:10px;color:var(--red);opacity:0}
+.pitem.active .chk{opacity:1}
+.pitem .tiny{
+  font:400 .7rem var(--mono);
+  background:rgba(0,212,255,.12);color:var(--cyan);
+  padding:1px 6px;border-radius:4px;margin-left:auto;
+}
+.pitem.active .tiny{background:rgba(255,45,85,.18);color:#ff80ab}
+
+/* Toast */
+.toast{
+  position:fixed;bottom:26px;left:50%;
+  transform:translateX(-50%) translateY(8px);
+  background:rgba(12,14,20,.96);color:var(--text);
+  border:1px solid var(--border2);border-left:3px solid var(--red);
+  padding:9px 20px;border-radius:11px;font:600 .82rem var(--ff);
+  backdrop-filter:blur(20px);z-index:9999;pointer-events:none;
+  opacity:0;transition:opacity .22s,transform .22s;
+}
+.toast.on{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* ── FOOTER ── */
+footer{
+  position:relative;z-index:1;
+  background:rgba(5,6,9,.95);border-top:1px solid var(--border);
+  padding:24px 28px;
+}
+.foot{max-width:1060px;margin:0 auto;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.foot-brand{font-size:16px;font-weight:800;letter-spacing:-.3px;color:var(--muted)}
+.foot-brand span{color:var(--red)}
+.foot-links{display:flex;gap:18px}
+.foot-links a{color:var(--muted);text-decoration:none;font-size:.78rem;transition:.15s}
+.foot-links a:hover{color:var(--text)}
+.foot-copy{color:var(--muted);font-size:.72rem}
+
+/* Responsive */
+@media(max-width:640px){
+  header{padding:0 14px}
+  .hdr-nav,.h-btn:not(.filled){display:none}
+  main{padding:14px 10px 48px;gap:12px}
+  .input-card{padding:16px}
+  .url-row{flex-direction:column}
+  .load-btn{justify-content:center}
+  .vol-sl{width:50px}
+  .time-tag{font-size:10px}
+}
+</style>
+</head>
+<body>
+
+<!-- HEADER -->
+<header>
+  <div class="logo">
+    <div class="logo-mark"><i class="fas fa-bolt"></i></div>
+    <div>
+      <div class="logo-wordmark">K<em>EX</em></div>
+      <div class="logo-tag">Cinema Engine</div>
+    </div>
+  </div>
+  <nav class="hdr-nav">
+    <a href="#">Explore</a>
+    <a href="#">Series</a>
+    <a href="#">Originals</a>
+    <a href="#">Kex+</a>
+  </nav>
+  <div class="hdr-end">
+    <button class="h-btn">Sign In</button>
+    <button class="h-btn filled">Subscribe</button>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main>
+
+  <!-- INPUT CARD -->
+  <div class="input-card">
+    <div class="card-eyebrow">Stream · Single MKV from Gofile.io</div>
+
+    <div class="url-row">
+      <input class="url-field" id="urlField" type="url"
+        placeholder="https://gofile.io/d/aBcDeF  —  must contain a single .mkv file"
+        spellcheck="false" autocomplete="off">
+      <button class="load-btn" id="loadBtn">
+        <i class="fas fa-circle-notch s-ico"></i>
+        <i class="fas fa-arrow-right p-ico"></i>
+        Analyze &amp; Play
+      </button>
+    </div>
+
+    <!-- Status bar -->
+    <div class="status" id="statusBar">
+      <i id="statusIco"></i>
+      <span id="statusTxt"></span>
+    </div>
+
+    <!-- Audio track chips -->
+    <div class="track-panel" id="trackPanel">
+      <div class="track-heading">
+        <i class="fas fa-layer-group"></i>
+        Embedded Audio Tracks — extracted from the MKV
+      </div>
+      <div class="chips" id="chipsGrid"></div>
+    </div>
+
+    <!-- File info -->
+    <div class="info-row" id="infoRow"></div>
+  </div>
+
+  <!-- PLAYER -->
+  <div class="player-shell">
+    <div class="player" id="PL">
+      <div class="vbox">
+        <video class="vel" id="VID" preload="metadata" playsinline webkit-playsinline></video>
+        <audio id="AUD" preload="none"></audio>
+        <div class="vspinner" id="VSpin"></div>
+
+        <!-- Empty state -->
+        <div class="empty" id="emptyOv">
+          <div class="empty-icon"><i class="fas fa-film"></i></div>
+          <div class="empty-text">Paste a Gofile.io .mkv link above to start</div>
+        </div>
+
+        <!-- Title bar -->
+        <div class="titlebar">
+          <div class="vid-title" id="vidTitle">KEX Cinema</div>
+          <button class="x-btn" id="xBtn"><i class="fas fa-times"></i></button>
+        </div>
+      </div>
+
+      <!-- CONTROLS -->
+      <div class="controls">
+        <!-- Progress -->
+        <div class="prog-wrap">
+          <div class="prog-track" id="PT"><div class="prog-fill" id="PF"></div></div>
+        </div>
+        <!-- Button row -->
+        <div class="ctrl-row">
+          <div class="ctrl-l">
+            <button class="cbtn play" id="playBtn"><i class="fas fa-play" id="playIco"></i></button>
+            <div class="time-tag"><b id="curT">00:00</b> / <span id="durT">00:00</span></div>
+          </div>
+          <div class="ctrl-r">
+            <!-- Speed -->
+            <div class="menu-anchor">
+              <button class="cbtn" id="speedBtn" title="Playback speed"><i class="fas fa-gauge-high"></i></button>
+              <div class="pmenu" id="speedMenu">
+                <div class="pitem" data-sp="0.25"><i class="fas fa-check chk"></i>0.25×</div>
+                <div class="pitem" data-sp="0.5"><i class="fas fa-check chk"></i>0.5×</div>
+                <div class="pitem" data-sp="0.75"><i class="fas fa-check chk"></i>0.75×</div>
+                <div class="pitem active" data-sp="1"><i class="fas fa-check chk"></i>Normal</div>
+                <div class="pitem" data-sp="1.25"><i class="fas fa-check chk"></i>1.25×</div>
+                <div class="pitem" data-sp="1.5"><i class="fas fa-check chk"></i>1.5×</div>
+                <div class="pitem" data-sp="2"><i class="fas fa-check chk"></i>2×</div>
+              </div>
+            </div>
+            <!-- Audio track (in-player) -->
+            <div class="menu-anchor" id="audMenuWrap" style="display:none">
+              <button class="cbtn" id="audMenuBtn" title="Audio track"><i class="fas fa-headphones"></i></button>
+              <div class="pmenu right" id="audMenu"></div>
+            </div>
+            <!-- Volume -->
+            <div class="vol-wrap">
+              <button class="cbtn" id="volBtn"><i class="fas fa-volume-up" id="volIco"></i></button>
+              <input class="vol-sl" id="volSl" type="range" min="0" max="1" step="0.01" value="0.8">
+            </div>
+            <!-- Fullscreen -->
+            <button class="cbtn" id="fsBtn"><i class="fas fa-expand"></i></button>
+          </div>
+        </div>
+      </div><!-- /controls -->
+    </div><!-- /player -->
+  </div><!-- /player-shell -->
+
+</main>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot">
+    <div class="foot-brand">K<span>EX</span> PLAYER</div>
+    <div class="foot-links">
+      <a href="#">About</a><a href="#">Devices</a>
+      <a href="#">Privacy</a><a href="#">Terms</a><a href="#">Help</a>
+    </div>
+    <div class="foot-copy">&copy; 2025 KEX Player</div>
+  </div>
+</footer>
+
+<script>
+/* ══════════════════════════════════════════════════════════════════
+   KEX Player · Frontend Logic
+   ══════════════════════════════════════════════════════════════════ */
+(function(){
+  // ── Backend base URL ─────────────────────────────────────────────
+  // Production (Express serves frontend): leave as ''
+  // Local dev with separate backend on :3001: change to 'http://localhost:3001'
+  const B = window.BACKEND_URL || '';
+
+  // ── DOM ───────────────────────────────────────────────────────────
+  const $  = id => document.getElementById(id);
+  const VID=$('VID'), AUD=$('AUD'), PL=$('PL');
+  const emptyOv=$('emptyOv'), vidTitle=$('vidTitle');
+  const playBtn=$('playBtn'), playIco=$('playIco');
+  const PT=$('PT'), PF=$('PF');
+  const curT=$('curT'), durT=$('durT');
+  const VSpin=$('VSpin');
+  const volBtn=$('volBtn'), volIco=$('volIco'), volSl=$('volSl');
+  const speedBtn=$('speedBtn'), speedMenu=$('speedMenu');
+  const audMenuWrap=$('audMenuWrap'), audMenuBtn=$('audMenuBtn'), audMenu=$('audMenu');
+  const fsBtn=$('fsBtn'), xBtn=$('xBtn');
+  const urlField=$('urlField'), loadBtn=$('loadBtn');
+  const statusBar=$('statusBar'), statusIco=$('statusIco'), statusTxt=$('statusTxt');
+  const trackPanel=$('trackPanel'), chipsGrid=$('chipsGrid');
+  const infoRow=$('infoRow');
+  const toastEl=$('toast');
+
+  // ── State ─────────────────────────────────────────────────────────
+  let ctrlT, ctrlOn=false, seeking=false, moving=false;
+  const mobile = /Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+  let delay = mobile ? 4000 : 3000;
+  let mkvUrl='', tracks=[], activeTrack=-1, extAudio=false;
+
+  // ── Toast ─────────────────────────────────────────────────────────
+  let toastT;
+  function toast(msg){
+    toastEl.textContent=msg; toastEl.classList.add('on');
+    clearTimeout(toastT); toastT=setTimeout(()=>toastEl.classList.remove('on'),2400);
+  }
+
+  // ── Status ────────────────────────────────────────────────────────
+  function setStatus(msg,type='loading'){
+    statusBar.className='status on '+type;
+    statusIco.className=type==='loading'?'fas fa-circle-notch fa-spin'
+                        :type==='error'  ?'fas fa-triangle-exclamation'
+                                         :'fas fa-circle-check';
+    statusTxt.textContent=msg;
+  }
+  function clearStatus(){ statusBar.className='status'; }
+
+  // ── Helpers ───────────────────────────────────────────────────────
+  function fmt(s){
+    if(!isFinite(s)||isNaN(s))return'00:00';
+    const m=Math.floor(s/60),sec=Math.floor(s%60);
+    return`${String(m).padStart(2,'0')}:${String(sec).padStart(2,'0')}`;
+  }
+  function fmtBytes(b){
+    if(!b)return'';
+    return b>=1e9?`${(b/1e9).toFixed(2)} GB`:`${(b/1e6).toFixed(1)} MB`;
+  }
+
+  // ── Controls show / hide ──────────────────────────────────────────
+  function showCtrl(){
+    if(!ctrlOn){PL.classList.add('cv');ctrlOn=true;}
+    resetTimer();
+  }
+  function hideCtrl(){
+    if(ctrlOn&&!VID.paused&&!moving&&!seeking){
+      PL.classList.remove('cv');ctrlOn=false;
+    }
+  }
+  function resetTimer(){ clearTimeout(ctrlT); ctrlT=setTimeout(hideCtrl,delay); }
+
+  // ── Play / Pause ──────────────────────────────────────────────────
+  function togglePlay(){
+    if(!VID.src)return;
+    if(VID.paused){
+      VID.play().then(()=>{
+        playIco.className='fas fa-pause';
+        if(extAudio) AUD.play().catch(()=>{});
+      }).catch(()=>{});
+    }else{
+      VID.pause();
+      playIco.className='fas fa-play';
+      if(extAudio) AUD.pause();
+    }
+    showCtrl();
+  }
+
+  // ── Progress ──────────────────────────────────────────────────────
+  function updateProg(){
+    if(!VID.duration)return;
+    PF.style.width=`${(VID.currentTime/VID.duration)*100}%`;
+    curT.textContent=fmt(VID.currentTime);
+  }
+  function seekAt(e){
+    const r=PT.getBoundingClientRect();
+    const x=(e.touches?e.touches[0].clientX:e.clientX)-r.left;
+    const pct=Math.min(1,Math.max(0,x/r.width));
+    if(VID.duration){ VID.currentTime=pct*VID.duration; syncAud(); }
+    showCtrl();
+  }
+
+  // ── Volume ────────────────────────────────────────────────────────
+  function updateVol(){
+    const m=VID.muted||VID.volume===0;
+    volIco.className=m?'fas fa-volume-mute':VID.volume>.5?'fas fa-volume-up':'fas fa-volume-down';
+    volSl.value=m?0:VID.volume;
+    AUD.volume=VID.volume; AUD.muted=VID.muted;
+  }
+  function toggleMute(){ VID.muted=!VID.muted;if(!VID.muted&&VID.volume===0)VID.volume=0.8;updateVol();showCtrl(); }
+
+  // ── Fullscreen ────────────────────────────────────────────────────
+  function toggleFS(){
+    const el=PL;
+    if(!document.fullscreenElement&&!document.webkitFullscreenElement)
+      (el.requestFullscreen||el.webkitRequestFullscreen||function(){}).call(el);
+    else
+      (document.exitFullscreen||document.webkitExitFullscreen||function(){}).call(document);
+  }
+  function onFS(){
+    const full=!!(document.fullscreenElement||document.webkitFullscreenElement);
+    fsBtn.innerHTML=full?'<i class="fas fa-compress"></i>':'<i class="fas fa-expand"></i>';
+    delay=full?4500:mobile?4000:3000;
+    if(!full)showCtrl();
+  }
+  document.addEventListener('fullscreenchange',onFS);
+  document.addEventListener('webkitfullscreenchange',onFS);
+
+  // ── External audio sync ───────────────────────────────────────────
+  function syncAud(){ if(extAudio) AUD.currentTime=VID.currentTime; }
+
+  // ── Switch audio track ────────────────────────────────────────────
+  function switchTrack(idx){
+    activeTrack=idx;
+
+    // Update chips + in-player menu
+    document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('active',+c.dataset.idx===idx));
+    document.querySelectorAll('#audMenu .pitem').forEach(p=>p.classList.toggle('active',+p.dataset.idx===idx));
+
+    if(idx===-1){
+      // Use the MKV's built-in embedded audio (no FFmpeg needed)
+      VID.muted=false;
+      AUD.pause(); AUD.src='';
+      extAudio=false;
+      updateVol();
+      toast('🔊 Embedded audio (default)');
+      return;
+    }
+
+    // Stream the chosen track via FFmpeg on the backend
+    VID.muted=true;
+    extAudio=true;
+    const seek=Math.floor(VID.currentTime);
+    AUD.src=`${B}/api/audio?url=${encodeURIComponent(mkvUrl)}&track=${idx}&seek=${seek}`;
+    AUD.volume=VID.volume; AUD.muted=false;
+    if(!VID.paused) AUD.play().catch(()=>{toast('▶ Click play to start audio');});
+    updateVol();
+    toast(`🎵 ${tracks[idx]?.label||'Track '+idx}`);
+  }
+
+  // ── Build audio UI ────────────────────────────────────────────────
+  function buildAudioUI(list){
+    tracks=list;
+    chipsGrid.innerHTML=''; audMenu.innerHTML='';
+
+    if(!list.length){
+      trackPanel.classList.remove('on');
+      audMenuWrap.style.display='none';
+      return;
+    }
+
+    // Helper — create "Embedded (default)" option
+    function makeDefault(isChip){
+      if(isChip){
+        const c=document.createElement('div');
+        c.className='chip active'; c.dataset.idx=-1;
+        c.innerHTML='<i class="fas fa-wave-square"></i> Embedded (default) <span class="cbadge">native</span>';
+        c.onclick=()=>switchTrack(-1);
+        chipsGrid.appendChild(c);
+      } else {
+        const p=document.createElement('div');
+        p.className='pitem active'; p.dataset.idx=-1;
+        p.innerHTML='<i class="fas fa-check chk"></i>Embedded (default)<span class="tiny">native</span>';
+        p.onclick=e=>{e.stopPropagation();switchTrack(-1);audMenu.classList.remove('open');};
+        audMenu.appendChild(p);
+      }
+    }
+    makeDefault(true); makeDefault(false);
+
+    list.forEach((t,i)=>{
+      // Chip
+      const c=document.createElement('div');
+      c.className='chip'; c.dataset.idx=i;
+      c.innerHTML=`<i class="fas fa-music"></i>${t.label}<span class="cbadge">${t.codec}</span>`;
+      c.onclick=()=>switchTrack(i);
+      chipsGrid.appendChild(c);
+      // Menu item
+      const p=document.createElement('div');
+      p.className='pitem'; p.dataset.idx=i;
+      p.innerHTML=`<i class="fas fa-check chk"></i>${t.label}<span class="tiny">${t.codec}</span>`;
+      p.onclick=e=>{e.stopPropagation();switchTrack(i);audMenu.classList.remove('open');};
+      audMenu.appendChild(p);
+    });
+
+    trackPanel.classList.add('on');
+    audMenuWrap.style.display='block';
+  }
+
+  // ── File info ─────────────────────────────────────────────────────
+  function buildInfoRow(d){
+    infoRow.innerHTML='';
+    [
+      {i:'fa-file-video', l:'File',   v:d.title},
+      {i:'fa-hdd',        l:'Size',   v:fmtBytes(d.size)},
+      {i:'fa-film',       l:'Format', v:'MKV · Matroska'},
+      {i:'fa-music',      l:'Tracks', v:`${d.audioTracks.length} audio`},
+    ].forEach(({i,l,v})=>{
+      if(!v)return;
+      const el=document.createElement('div');
+      el.className='ipill';
+      el.innerHTML=`<i class="fas ${i}"></i>${l}: <b>${v}</b>`;
+      infoRow.appendChild(el);
+    });
+    infoRow.classList.add('on');
+  }
+
+  // ── LOAD ──────────────────────────────────────────────────────────
+  async function load(){
+    const url=urlField.value.trim();
+    if(!url){setStatus('Please enter a Gofile.io URL','error');return;}
+    if(!url.includes('gofile.io')){setStatus('URL must be a gofile.io link','error');return;}
+
+    loadBtn.classList.add('loading'); loadBtn.disabled=true;
+    setStatus('Resolving Gofile link…');
+    emptyOv.style.display='flex';
+    trackPanel.classList.remove('on');
+    infoRow.classList.remove('on');
+    audMenuWrap.style.display='none';
+    extAudio=false; AUD.src=''; AUD.pause(); activeTrack=-1;
+
+    try{
+      setStatus('Probing MKV — reading embedded audio tracks…');
+      const res  = await fetch(`${B}/api/resolve?url=${encodeURIComponent(url)}`);
+      const data = await res.json();
+      if(!res.ok) throw new Error(data.error||'Unknown error');
+
+      mkvUrl = data.videoUrl;
+
+      // Load video through proxy (needed for CORS + seek range support)
+      VID.src=`${B}/api/proxy?url=${encodeURIComponent(mkvUrl)}`;
+      VID.muted=false; VID.load();
+      emptyOv.style.display='none';
+      vidTitle.textContent=`🎬 ${data.title}`;
+
+      buildAudioUI(data.audioTracks);
+      buildInfoRow(data);
+
+      const tc=data.audioTracks.length;
+      setStatus(
+        tc>0
+          ? `✅ Ready · ${tc} audio track${tc>1?'s':''} found — select a track or press play`
+          : `✅ Ready · single embedded audio (press play)`,
+        'ok'
+      );
+      toast('✅ MKV loaded — press play!');
+
+    }catch(err){
+      setStatus(err.message,'error');
+      toast('❌ '+err.message.slice(0,80));
+      console.error('[KEX]',err);
+    }finally{
+      loadBtn.classList.remove('loading'); loadBtn.disabled=false;
+    }
+  }
+
+  // ── Bind events ───────────────────────────────────────────────────
+  loadBtn.onclick = load;
+  urlField.onkeydown = e=>{ if(e.key==='Enter') load(); };
+
+  playBtn.onclick   = togglePlay;
+  VID.onclick       = showCtrl;
+  VID.ontimeupdate  = updateProg;
+  VID.onloadedmetadata = ()=>{ durT.textContent=fmt(VID.duration); VSpin.style.display='none'; };
+  VID.onwaiting  = ()=>{ VSpin.style.display='block'; };
+  VID.onplaying  = ()=>{ VSpin.style.display='none'; playIco.className='fas fa-pause'; };
+  VID.onpause    = ()=>{ playIco.className='fas fa-play'; };
+  VID.onended    = ()=>{ playIco.className='fas fa-play'; if(extAudio)AUD.pause(); };
+  VID.onseeked   = syncAud;
+
+  // Progress bar
+  PT.onclick = seekAt;
+  PT.onmousedown = ()=>{ seeking=true; showCtrl(); };
+  PT.onmousemove = e=>{ if(seeking)seekAt(e); };
+  window.onmouseup = ()=>{ seeking=false; resetTimer(); };
+  if('ontouchstart' in window){
+    PT.addEventListener('touchstart',e=>{seeking=true;seekAt(e);e.preventDefault();},{passive:false});
+    PT.addEventListener('touchmove', e=>{if(seeking){seekAt(e);e.preventDefault();}},{passive:false});
+    PT.addEventListener('touchend',  ()=>{seeking=false;resetTimer();});
+  }
+
+  // Volume
+  volSl.oninput = e=>{ VID.volume=parseFloat(e.target.value);VID.muted=false;updateVol();showCtrl(); };
+  volBtn.onclick = toggleMute;
+
+  // Speed menu
+  speedBtn.onclick = e=>{ e.stopPropagation();speedMenu.classList.toggle('open');audMenu.classList.remove('open');showCtrl(); };
+  speedMenu.querySelectorAll('.pitem').forEach(p=>{
+    p.onclick = e=>{
+      e.stopPropagation();
+      const sp=parseFloat(p.dataset.sp);
+      VID.playbackRate=sp; AUD.playbackRate=sp;
+      speedMenu.querySelectorAll('.pitem').forEach(x=>x.classList.remove('active'));
+      p.classList.add('active');
+      speedMenu.classList.remove('open');
+      toast(`⚡ Speed ${p.textContent.trim()}`);
+      showCtrl();
+    };
+  });
+
+  // Audio menu (in-player)
+  audMenuBtn.onclick = e=>{ e.stopPropagation();audMenu.classList.toggle('open');speedMenu.classList.remove('open');showCtrl(); };
+
+  // Fullscreen
+  fsBtn.onclick = toggleFS;
+  xBtn.onclick  = ()=>{ if(document.fullscreenElement||document.webkitFullscreenElement)(document.exitFullscreen||document.webkitExitFullscreen).call(document); };
+
+  // Mouse movement
+  PL.onmousemove  = ()=>{ moving=true;showCtrl();setTimeout(()=>{moving=false;},800); };
+  PL.onmouseleave = ()=>{ if(!VID.paused){PL.classList.remove('cv');ctrlOn=false;} };
+  PL.onmouseenter = showCtrl;
+
+  // Close menus on outside click
+  document.onclick = ()=>{ speedMenu.classList.remove('open'); audMenu.classList.remove('open'); };
+
+  // Keyboard
+  window.onkeydown = e=>{
+    if(e.target.tagName==='INPUT'||e.target.tagName==='SELECT')return;
+    if(e.key===' '||e.key==='k'){togglePlay();e.preventDefault();}
+    else if(e.key==='m'){toggleMute();e.preventDefault();}
+    else if(e.key==='f'){toggleFS();e.preventDefault();}
+    else if(e.key==='ArrowLeft') {VID.currentTime=Math.max(0,VID.currentTime-5);syncAud();showCtrl();e.preventDefault();}
+    else if(e.key==='ArrowRight'){VID.currentTime=Math.min(VID.duration||0,VID.currentTime+5);syncAud();showCtrl();e.preventDefault();}
+    else if(e.key==='ArrowUp')  {VID.volume=Math.min(1,VID.volume+.1);updateVol();showCtrl();e.preventDefault();}
+    else if(e.key==='ArrowDown'){VID.volume=Math.max(0,VID.volume-.1);updateVol();showCtrl();e.preventDefault();}
+  };
+
+  PL.oncontextmenu = e=>e.preventDefault();
+  VID.ondragstart  = e=>e.preventDefault();
+
+  // Init
+  VID.volume=0.8; updateVol(); showCtrl();
+  console.log('✅ KEX Player v3 · FFmpeg track extraction · ready');
+})();
+</script>
+</body>
+</html>
