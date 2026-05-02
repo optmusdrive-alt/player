@@ -538,7 +538,7 @@ footer{
   // ── Backend base URL ─────────────────────────────────────────────
   // Production (Express serves frontend): leave as ''
   // Local dev with separate backend on :3001: change to 'http://localhost:3001'
-  const B = window.BACKEND_URL || '';
+  const B = window.BACKEND_URL || 'https://player-production-24ee.up.railway.app';
 
   // ── DOM ───────────────────────────────────────────────────────────
   const $  = id => document.getElementById(id);
